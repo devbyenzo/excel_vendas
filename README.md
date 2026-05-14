@@ -1,18 +1,21 @@
-# 📊 Analisador de Planilhas com Python
+# 📦 Análise de Vendas com Python e Excel
 
-Projeto desenvolvido em **Python** para analisar uma planilha detalhada de forma automatizada, processando os dados e exibindo os resultados de maneira clara, organizada e prática.
-
----
-
-# 🚀 Sobre o Projeto
-
-Este script foi criado com o objetivo de facilitar a análise de dados presentes em planilhas, evitando processos manuais e economizando tempo.
-
-Com ele, é possível carregar uma planilha, ler suas informações, processar os dados e apresentar os resultados finais diretamente no terminal.
+Projeto desenvolvido em Python para analisar uma planilha `.xlsx` de vendas, agrupando produtos automaticamente e exibindo a quantidade total vendida de cada item no terminal.
 
 ---
 
-# 🛠️ Tecnologias Utilizadas
+# 🚀 Funcionalidades
+
+- Leitura de arquivos Excel `.xlsx`
+- Agrupamento automático de produtos
+- Soma da quantidade vendida
+- Exibição organizada no terminal
+- Tratamento utilizando ID do produto
+- Código simples e didático para estudos de análise de dados
+
+---
+
+# 🛠️ Tecnologias utilizadas
 
 - Python
 - Pandas
@@ -20,136 +23,171 @@ Com ele, é possível carregar uma planilha, ler suas informações, processar o
 
 ---
 
-# 📁 Estrutura do Projeto
+# 📁 Estrutura do projeto
 
 ```bash
-projeto/
+analise-vendas/
 │
 ├── main.py
-├── planilha.xlsx
+├── vendas.xlsx
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-# 📦 Instalação
+# 📄 Estrutura da planilha
 
-## 1. Clone o repositório
+O arquivo `vendas.xlsx` deve conter as seguintes colunas:
+
+| Nome_Produto | ID_Produto | Quantidade_Vendida |
+|--------------|------------|--------------------|
+| Mouse Gamer | 101 | 2 |
+| Mouse Gamer | 101 | 5 |
+| Teclado RGB | 102 | 3 |
+
+---
+
+# ⚙️ Instalação
+
+Clone o repositório:
 
 ```bash
 git clone https://github.com/seu-usuario/seu-repositorio.git
 ```
 
-## 2. Acesse a pasta do projeto
+Entre na pasta:
 
 ```bash
 cd seu-repositorio
 ```
 
-## 3. Crie um ambiente virtual
+Instale as dependências:
 
 ```bash
-python -m venv venv
-```
-
-## 4. Ative o ambiente virtual
-
-### Windows
-
-```bash
-venv\Scripts\activate
-```
-
-### Linux/Mac
-
-```bash
-source venv/bin/activate
-```
-
-## 5. Instale as dependências
-
-```bash
-pip install -r requirements.txt
+pip install pandas openpyxl
 ```
 
 ---
 
-# ▶️ Como Usar
+# ▶️ Como executar
 
-## 1. Coloque sua planilha na pasta do projeto
+Certifique-se de que o arquivo `vendas.xlsx` esteja na mesma pasta do código Python.
 
-Adicione o arquivo `.xlsx` dentro da pasta principal do projeto.
-
-Exemplo:
-
-```bash
-planilha.xlsx
-```
-
-## 2. Verifique o nome da planilha no código
-
-No arquivo `main.py`, confira se o nome do arquivo está correto:
-
-```python
-arquivo = "planilha.xlsx"
-```
-
-## 3. Execute o script
+Depois execute:
 
 ```bash
 python main.py
 ```
 
-## 4. Veja o resultado
-
-Após a execução, o script irá analisar os dados da planilha e mostrar o resultado no terminal.
-
 ---
 
-# 📌 Exemplo de Saída
-
-```bash
-Análise concluída com sucesso!
-
-Total de registros analisados: 150
-Maior valor encontrado: R$ 2.500,00
-Menor valor encontrado: R$ 50,00
-Média dos valores: R$ 730,00
-```
-
----
-
-# 📄 Exemplo de Código Base
+# 💻 Código principal
 
 ```python
+# Autor: Enzo
+# Projeto - Verificar quantos determinados produtos foram vendidos seguindo uma planilha .xlsx
+
 import pandas as pd
 
-arquivo = "planilha.xlsx"
 
-df = pd.read_excel(arquivo)
+def Excel():
+    # 1 - Lendo a planilha
+    data = pd.read_excel("vendas.xlsx")
 
-print("Planilha carregada com sucesso!")
-print(df.head())
+    # 2 - Agrupando os dados (Incluindo o ID do Produto para não dar erro no print)
+    df_agrupa = (
+        data.groupby(["Nome_Produto", "ID_Produto"], as_index=False)[
+            "Quantidade_Vendida"
+        ]
+        .sum()
+    )
 
-print("Total de registros:", len(df))
+    # 3 - Criando a coluna unificada
+    df_agrupa["Resultado"] = (
+        df_agrupa["Nome_Produto"]+ ", " + df_agrupa["Quantidade_Vendida"].astype(str))
+
+    # 4 - Loop para pegar tudo e printar
+    for linha in df_agrupa.itertuples():
+        print(
+            f"Produto: {linha.Nome_Produto}, Quantidade: {linha.Quantidade_Vendida}, ID: {linha.ID_Produto}"
+        )
+
+
+Excel()
 ```
 
 ---
 
-# ✅ Funcionalidades
+# 📌 Como o sistema funciona
 
-- Leitura de planilhas `.xlsx`
-- Análise automática dos dados
-- Exibição dos resultados no terminal
-- Código simples e fácil de adaptar
-- Organização dos dados com Pandas
+## 1️⃣ Leitura da planilha
+
+O sistema utiliza o `pandas` para abrir o arquivo:
+
+```python
+pd.read_excel("vendas.xlsx")
+```
 
 ---
 
-# 📋 Requirements
+## 2️⃣ Agrupamento dos produtos
 
-Crie um arquivo chamado `requirements.txt` com:
+Os dados são agrupados por:
+- Nome do produto
+- ID do produto
+
+Depois disso, o sistema soma automaticamente todas as quantidades vendidas.
+
+---
+
+## 3️⃣ Organização dos resultados
+
+O programa cria uma coluna personalizada chamada `Resultado`, unificando:
+- Nome do produto
+- Quantidade vendida
+
+---
+
+## 4️⃣ Exibição no terminal
+
+O sistema percorre todos os produtos agrupados e exibe:
+
+```bash
+Produto: Mouse Gamer, Quantidade: 7, ID: 101
+```
+
+---
+
+# ✅ Exemplo de saída
+
+```bash
+Produto: Mouse Gamer, Quantidade: 7, ID: 101
+Produto: Teclado RGB, Quantidade: 3, ID: 102
+```
+
+---
+
+# 📸 Preview
+
+Você pode adicionar prints do:
+- Código utilizando CodeSnap
+- Planilha Excel
+- Resultado no terminal
+
+Exemplo:
+
+```markdown
+<p align="center">
+  <img src="images/codesnap.png" width="900"/>
+</p>
+```
+
+---
+
+# 📦 Requirements
+
+Arquivo `requirements.txt`:
 
 ```txt
 pandas
@@ -158,25 +196,9 @@ openpyxl
 
 ---
 
-# 🎯 Objetivo
-
-O objetivo deste projeto é praticar automação com Python, leitura de planilhas e análise de dados, criando uma ferramenta simples, funcional e útil para diferentes tipos de relatórios.
-
----
-
-# 📌 Possíveis Melhorias Futuras
-
-- Exportar o resultado para uma nova planilha
-- Criar gráficos automáticos
-- Gerar relatórios em PDF
-- Criar uma interface gráfica
-- Permitir seleção automática do arquivo
-
----
-
 # 👨‍💻 Autor
 
-Desenvolvido por **Enzo Pietrantonio**.
+Desenvolvido por **Enzo**.
 
 ---
 
